@@ -8,23 +8,105 @@
 </head>
 <body>
     <input id="calc">
+    <input type="checkbox" id="checkbox" name="scales"
+         checked>is mountly
+    <select id="slct">
+
+      </select>
     <div id="out">
 
     </div>
     <script>
+        let gl_conf = {
+            inside: {
+                first_procent: {
+                    needed_value: 78201.41,
+                    minus_salat: 11000.85,
+                    div_val: 0.56
+                },
+
+                second_procent: {
+                    needed_value: 23301.11,
+                    minus_salat: 5000.5,
+                    div_val: 0.61
+                },
+                third_procent: {
+                    needed_value: 9100.91,
+                    minus_salat: 2000.2,
+                    div_val: 0.71
+                },
+                four_procent: {
+                    div_val: 0.91,
+                    minus_salat: 0
+                },
+                
+            },
+            val_arr: {
+                "DZD": 1,
+                "EUR": 1.05,               
+                "USD": 1.10,
+                "GBR": 1.10,
+            }
+        }
+        
+        
         let i = document.getElementById("calc")
-        console.log(i)
+        let output = document.getElementById("out")
+        
+    let select = document.getElementById('slct');
+Object.keys(gl_conf.val_arr).forEach(function(key) {
+
+var opt = document.createElement('option');
+    opt.value = gl_conf.val_arr[key];
+    opt.innerHTML = key;
+    select.appendChild(opt);
+});
+
+function output_m_yes(v, minus_salat, div_val, selected_value) {
+    let out = ((v*selected_value - minus_salat)/div_val)/selected_value
+    output.innerHTML = out
+}
+
+function output_m_no(v, minus_salat, div_val, selected_value) {
+    let out = (((v/12)*selected_value - minus_salat)/div_val)/selected_value
+    output.innerHTML = out
+}
+
         i.onchange = function()  {
             let v = Number(i.value)
-            let employee_SI_SHARE = 9
-            console.log("employee_SI_SHARE", (v*employee_SI_SHARE/100))
-
-            let employer_SI_SHARE = 26
-            console.log("employer_SI_SHARE", (v*employer_SI_SHARE/100))
+            let rate = select.value || gl_conf.val_arr[0]
+            console.log(v)
             
-            let total = v+(v*employer_SI_SHARE/100)
-            console.log("total",total)
+            if(document.getElementById("checkbox").checked){
+                if(v > gl_conf.inside.first_procent.needed_value){
+                    output_m_yes(v, gl_conf.inside.first_procent.minus_salat, gl_conf.inside.first_procent.div_val, rate)
+                }
+                else if(v > gl_conf.inside.second_procent.needed_value){
+                    output_m_yes(v, gl_conf.inside.second_procent.minus_salat, gl_conf.inside.second_procent.div_val, rate)
+                }
+                else if(v > gl_conf.inside.third_procent.needed_value){
+                    output_m_yes(v, gl_conf.inside.third_procent.minus_salat, gl_conf.inside.third_procent.div_val, rate)
+                }else 
+                    output_m_yes(v, gl_conf.inside.four_procent.minus_salat, gl_conf.inside.four_procent.div_val, rate)
+                    
+            }
+            else{
+                if((v/12)*rate > gl_conf.inside.first_procent.needed_value){
+                    output_m_no(v, gl_conf.inside.first_procent.minus_salat, gl_conf.inside.first_procent.div_val, rate)
+                }
+                else if((v/12)*rate > gl_conf.inside.second_procent.needed_value){
+                    output_m_no(v, gl_conf.inside.second_procent.minus_salat, gl_conf.inside.second_procent.div_val, rate)
+                }
+                else if((v/12)*rate > gl_conf.inside.third_procent.needed_value){
+                    output_m_no(v, gl_conf.inside.third_procent.minus_salat, gl_conf.inside.third_procent.div_val, rate)
+                }else 
+                    output_m_no(v, gl_conf.inside.four_procent.minus_salat, gl_conf.inside.four_procent.div_val, rate)
+
+            }
 };
+
+
+
     </script>
 </body>
 </html>
